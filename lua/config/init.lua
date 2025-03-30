@@ -27,6 +27,22 @@ vim.opt.shiftwidth = 4
 vim.keymap.set('n','<C-k>', vim.cmd('tabnext'))
 vim.keymap.set('n','<C-j>', vim.cmd('tabprevious'))
 
+-- Configure diagnostics display
+vim.diagnostic.config({
+  virtual_text = true,      -- Show inline virtual text
+  signs = true,            -- Show signs in the sign column
+  underline = true,        -- Underline errors
+  update_in_insert = false,-- Don't update while typing
+  severity_sort = true,    -- Sort diagnostics by severity
+  float = true
+  })
+
+-- Navigate diagnostics
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" })
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = "Go to next diagnostic" })
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = "Show diagnostic [E]rror message" })
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
+
 -- Setup lazy.nvim
 require("lazy").setup({
     spec = {

@@ -23,45 +23,78 @@ return {
     -- Java
     {
 	"mfussenegger/nvim-jdtls",
+	ft = "java",  -- Only load for Java files
+	dependencies = {  -- Add completion dependencies
+	    "hrsh7th/nvim-cmp",
+	    "hrsh7th/cmp-nvim-lsp",
+	    "hrsh7th/cmp-path",
+	    "hrsh7th/cmp-buffer"
+	},
 	config = function()
+	    -- Your existing keymaps (unchanged)
 	    vim.keymap.set('n', '<A-o>', function()
 		require('jdtls').organize_imports()
 	    end, { desc = 'Organize Java imports' })
 
-	    -- Extract variable (normal and visual mode)
 	    vim.keymap.set('n', 'crv', function()
 		require('jdtls').extract_variable()
 	    end, { desc = 'Extract variable' })
 
 	    vim.keymap.set('v', 'crv', function()
-		require('jdtls').extract_variable(true)
+		require('jdtls').extract_variable({visual = true})
 	    end, { desc = 'Extract variable (visual)' })
 
-	    -- Extract constant (normal and visual mode)
 	    vim.keymap.set('n', 'crc', function()
 		require('jdtls').extract_constant()
 	    end, { desc = 'Extract constant' })
 
 	    vim.keymap.set('v', 'crc', function()
-		require('jdtls').extract_constant(true)
+		require('jdtls').extract_constant({visual = true})
 	    end, { desc = 'Extract constant (visual)' })
 
-	    -- Extract method (visual mode only)
 	    vim.keymap.set('v', 'crm', function()
-		require('jdtls').extract_method(true)
+		require('jdtls').extract_method({visual = true})
 	    end, { desc = 'Extract method' })
+
+	    -- JDTLS Setup with completion capabilities
 	    require("lspconfig").jdtls.setup {
 		cmd = {'/usr/local/src/jdt-language-server-latest/bin/jdtls'},
-		root_dir = vim.fs.dirname(vim.fs.find({'gradlew', '.git', 'mvnw'}, { upward = true })[1])
+		root_dir = vim.fs.dirname(vim.fs.find({'gradlew', '.git', 'mvnw'}, { upward = true })[1]),
+		capabilities = require('cmp_nvim_lsp').default_capabilities(),
 	    }
-	end,
 
+	    -- Set up nvim-cmp for Java files
+	    vim.api.nvim_create_autocmd('FileType', {
+		pattern = 'java',
+		callback = function()
+		    local cmp = require('cmp')
+		    cmp.setup.buffer({
+			completion = {
+			    completeopt = 'menu,menuone,noinsert,noselect'
+			},
+			sources = cmp.config.sources({
+			    { name = 'nvim_lsp' },  -- JDTLS completions
+			    { name = 'buffer' },    -- Buffer words
+			    { name = 'path' },      -- File paths
+			})
+		    })
+		end
+	    })
+	end
     },
+
     -- PHP
     {
-	-- PHP Actor configuration with Symfony support
 	'phpactor/phpactor',
+	ft = 'php',
+	build = 'composer install',  -- Added build step
+	dependencies = {  -- Added completion dependencies
+	    'hrsh7th/nvim-cmp',
+	    'hrsh7th/cmp-nvim-lsp',
+	    'neovim/nvim-lspconfig'
+	},
 	config = function()
+	    -- Your existing PHP Actor configuration
 	    require("lspconfig").phpactor.setup {
 		cmd = { "phpactor", "language-server" },
 		filetypes = { "php" },
@@ -77,12 +110,8 @@ return {
 		    vim.fn.expand('%:p:h')
 		end,
 		init_options = {
-		    -- Enable Symfony support
 		    ["symfony.enabled"] = true,
-		    -- Default Symfony container path (adjust if needed)
 		    ["symfony.xml_path"] = "var/cache/dev/App_KernelDevDebugContainer.xml",
-
-		    -- Other PHP Actor options
 		    ["language_server_phpstan.enabled"] = false,
 		    ["language_server_psalm.enabled"] = false,
 		},
@@ -90,8 +119,6 @@ return {
 		    phpactor = {
 			symfony = {
 			    enabled = true,
-			    -- Optional: specify alternative container path if different
-			    -- container_path = "var/cache/dev/App_KernelDevDebugContainer.xml"
 			},
 			completion = {
 			    enabled = true,
@@ -100,6 +127,28 @@ return {
 		    }
 		}
 	    }
+
+	    -- Add nvim-cmp configuration (preserves your PHP Actor setup)
+	    local cmp = require('cmp')
+	    cmp.setup({
+		completion = {
+		    completeopt = 'menu,menuone,noinsert,noselect'
+		},
+		sources = {
+		    { name = 'nvim_lsp' },  -- Includes PHP Actor completions
+		    { name = 'buffer' },
+		    { name = 'path' }
+		}
+	    })
+
+	    -- Optional: PHP-specific keymaps
+	    vim.api.nvim_create_autocmd('FileType', {
+		pattern = 'php',
+		callback = function()
+		    vim.keymap.set('n', '<leader>pc', '<cmd>PhpactorContextMenu<CR>', { buffer = true, desc = 'PHP Context Menu' })
+		    vim.keymap.set('n', '<leader>pi', '<cmd>PhpactorImportClass<CR>', { buffer = true, desc = 'Import Class' })
+		end
+	    })
 	end
     }
 }
