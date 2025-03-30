@@ -24,6 +24,7 @@ vim.g.maplocalleader = "\\"
 vim.o.number = true
 vim.opt.clipboard = "unnamedplus"
 vim.opt.shiftwidth = 4
+vim.opt.cmdheight = 2
 vim.keymap.set('n','<C-k>', vim.cmd('tabnext'))
 vim.keymap.set('n','<C-j>', vim.cmd('tabprevious'))
 
@@ -53,5 +54,5 @@ require("lazy").setup({
     -- colorscheme that will be used when installing plugins.
     install = { colorscheme = { "catppuccin" } },
     -- automatically check for plugin updates
-    checker = { enabled = true },
+    checker = { enabled = false},
 })

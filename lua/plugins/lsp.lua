@@ -23,8 +23,8 @@ return {
     -- Java
     {
 	"mfussenegger/nvim-jdtls",
-	ft = "java",  -- Only load for Java files
-	dependencies = {  -- Add completion dependencies
+	ft = "java",
+	dependencies = {
 	    "hrsh7th/nvim-cmp",
 	    "hrsh7th/cmp-nvim-lsp",
 	    "hrsh7th/cmp-path",
@@ -56,14 +56,49 @@ return {
 		require('jdtls').extract_method({visual = true})
 	    end, { desc = 'Extract method' })
 
-	    -- JDTLS Setup with completion capabilities
-	    require("lspconfig").jdtls.setup {
+	    -- Enhanced JDTLS configuration
+	    local root_dir = vim.fs.dirname(vim.fs.find({'gradlew', '.git', 'mvnw', 'build.gradle', 'pom.xml'}, { upward = true })[1])
+	    local project_name = vim.fn.fnamemodify(root_dir, ":p:h:t")
+	    local workspace_dir = vim.fn.stdpath('data') .. '/workspace/' .. project_name
+
+	    local config = {
 		cmd = {'/usr/local/src/jdt-language-server-latest/bin/jdtls'},
-		root_dir = vim.fs.dirname(vim.fs.find({'gradlew', '.git', 'mvnw'}, { upward = true })[1]),
-		capabilities = require('cmp_nvim_lsp').default_capabilities(),
+		root_dir = root_dir,
+		settings = {
+		    java = {
+			configuration = {
+			    updateBuildConfiguration = "automatic",
+			    annotationProcessing = {
+				enabled = true,
+				fileOutput = {
+				    enabled = true,
+				    directory = "${project_dir}/build/generated/sources/annotationProcessor/java/main"
+				}
+			    }
+			},
+			completion = {
+			    favoriteStaticMembers = {
+				"org.springframework.*",
+				"org.junit.*",
+				"org.mockito.Mockito.*"
+			    }
+			}
+		    }
+		},
+		init_options = {
+		    extendedClientCapabilities = {
+			progressReportProvider = true,
+			classFileContentsSupport = true
+		    },
+		    workspace = workspace_dir
+		},
+		capabilities = require('cmp_nvim_lsp').default_capabilities()
 	    }
 
-	    -- Set up nvim-cmp for Java files
+	    -- Start JDTLS with the enhanced config
+	    require("lspconfig").jdtls.setup(config)
+
+	    -- Your existing nvim-cmp setup (unchanged)
 	    vim.api.nvim_create_autocmd('FileType', {
 		pattern = 'java',
 		callback = function()
@@ -73,9 +108,9 @@ return {
 			    completeopt = 'menu,menuone,noinsert,noselect'
 			},
 			sources = cmp.config.sources({
-			    { name = 'nvim_lsp' },  -- JDTLS completions
-			    { name = 'buffer' },    -- Buffer words
-			    { name = 'path' },      -- File paths
+			    { name = 'nvim_lsp' },
+			    { name = 'buffer' },
+			    { name = 'path' }
 			})
 		    })
 		end
