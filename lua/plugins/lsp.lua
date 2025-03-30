@@ -28,7 +28,8 @@ return {
 	    "hrsh7th/nvim-cmp",
 	    "hrsh7th/cmp-nvim-lsp",
 	    "hrsh7th/cmp-path",
-	    "hrsh7th/cmp-buffer"
+	    "hrsh7th/cmp-buffer",
+	    "mfussenegger/nvim-dap"
 	},
 	config = function()
 	    -- Your existing keymaps (unchanged)
@@ -96,6 +97,9 @@ return {
 			-- LibGDX-specific enhancements
 			advancedOrganizeImportsSupport = is_libgdx or nil
 		    },
+		    bundles = {
+			vim.fn.glob("/usr/local/src/java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-0.53.1.jar", true)
+		    },
 		    workspace = workspace_dir,
 		    jvm_args = is_libgdx and {
 			"-Xms1g",
@@ -137,7 +141,7 @@ return {
 	dependencies = {  -- Added completion dependencies
 	    'hrsh7th/nvim-cmp',
 	    'hrsh7th/cmp-nvim-lsp',
-	    'neovim/nvim-lspconfig'
+	    'neovim/nvim-lspconfig',
 	},
 	config = function()
 	    -- Your existing PHP Actor configuration
