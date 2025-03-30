@@ -25,8 +25,9 @@ vim.o.number = true
 vim.opt.clipboard = "unnamedplus"
 vim.opt.shiftwidth = 4
 vim.opt.cmdheight = 2
-vim.keymap.set('n','<C-k>', vim.cmd('tabnext'))
-vim.keymap.set('n','<C-j>', vim.cmd('tabprevious'))
+
+vim.keymap.set('n','<C-k>', '<cmd>tabnext<CR>', { desc = 'Next tab' })
+vim.keymap.set('n','<C-j>', '<cmd>tabprevious<CR>', { desc = 'Previous tab'})
 
 -- Configure diagnostics display
 vim.diagnostic.config({

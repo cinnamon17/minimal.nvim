@@ -57,9 +57,10 @@ return {
 	    end, { desc = 'Extract method' })
 
 	    -- Enhanced JDTLS configuration
-	    local root_dir = vim.fs.dirname(vim.fs.find({'gradlew', '.git', 'mvnw', 'build.gradle', 'pom.xml'}, { upward = true })[1])
+	    local root_dir = vim.fs.dirname(vim.fs.find({'gradlew', '.git', 'mvnw', 'build.gradle', 'pom.xml', 'settings.gradle'}, { upward = true })[1])
 	    local project_name = vim.fn.fnamemodify(root_dir, ":p:h:t")
 	    local workspace_dir = vim.fn.stdpath('data') .. '/workspace/' .. project_name
+	    local is_libgdx = vim.fn.findfile('core/build.gradle', root_dir..';') ~= ''
 
 	    local config = {
 		cmd = {'/usr/local/src/jdt-language-server-latest/bin/jdtls'},
@@ -80,17 +81,27 @@ return {
 			    favoriteStaticMembers = {
 				"org.springframework.*",
 				"org.junit.*",
-				"org.mockito.Mockito.*"
-			    }
+				"org.mockito.Mockito.*",
+				-- LibGDX additions (only added if libGDX detected)
+				is_libgdx and "com.badlogic.gdx.*" or nil,
+			    },
+			    importOrder = is_libgdx and { "com.badlogic", "java", "javax", "" } or nil
 			}
 		    }
 		},
 		init_options = {
 		    extendedClientCapabilities = {
 			progressReportProvider = true,
-			classFileContentsSupport = true
+			classFileContentsSupport = true,
+			-- LibGDX-specific enhancements
+			advancedOrganizeImportsSupport = is_libgdx or nil
 		    },
-		    workspace = workspace_dir
+		    workspace = workspace_dir,
+		    jvm_args = is_libgdx and {
+			"-Xms1g",
+			"-Xmx4g",
+			"--add-opens", "java.base/java.util=ALL-UNNAMED"
+		    } or nil
 		},
 		capabilities = require('cmp_nvim_lsp').default_capabilities()
 	    }
