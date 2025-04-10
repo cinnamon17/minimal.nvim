@@ -62,9 +62,14 @@ return {
 	    local project_name = vim.fn.fnamemodify(root_dir, ":p:h:t")
 	    local workspace_dir = vim.fn.stdpath('data') .. '/workspace/' .. project_name
 	    local is_libgdx = vim.fn.findfile('core/build.gradle', root_dir..';') ~= ''
-
+	    local jdtls_bin = '/usr/local/src/jdt-language-server-latest/bin/jdtls'
+	    if jit.os == "Windows" then
+		-- download from eclipse snapshots, and edit the python script to match JAVA_JDK_21
+		-- get from https://download.eclipse.org/jdtls/snapshots/?d
+		jdtls_bin = vim.fn.expand('~/AppData/Local/jdt-language-server-latest/bin/jdtls');
+	    end
 	    local config = {
-		cmd = {'/usr/local/src/jdt-language-server-latest/bin/jdtls'},
+		cmd = {jdtls_bin},
 		root_dir = root_dir,
 		settings = {
 		    java = {

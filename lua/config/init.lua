@@ -19,6 +19,11 @@ vim.opt.rtp:prepend(lazypath)
 -- loading lazy.nvim so that mappings are correct.
 -- This is also a good place to setup other settings (vim.opt)
 vim.g.python3_host_prog = vim.fn.expand('~/.pyenv/versions/3.11.6/bin/python')
+
+if jit.os == "Windows" then
+    vim.g.python3_host_prog = vim.fn.expand('~/.pyenv/pyenv-win/versions/3.11.6/python')
+end
+
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 vim.o.number = true
