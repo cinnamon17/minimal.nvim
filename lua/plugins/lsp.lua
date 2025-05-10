@@ -103,7 +103,7 @@ return {
 			advancedOrganizeImportsSupport = is_libgdx or nil
 		    },
 		    bundles = {
-			vim.fn.glob("/usr/local/src/java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-0.53.1.jar", true)
+			vim.fn.glob("/usr/local/src/java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-0.53.2.jar", true)
 		    },
 		    workspace = workspace_dir,
 		    jvm_args = is_libgdx and {
@@ -202,7 +202,6 @@ return {
 		callback = function()
 		    vim.keymap.set('n', '<leader>pc', '<cmd>PhpactorContextMenu<CR>', { buffer = true, desc = 'PHP Context Menu' })
 		    vim.keymap.set('n', '<leader>pi', '<cmd>PhpactorImportClass<CR>', { buffer = true, desc = 'Import Class' })
-
 		end
 	    })
 	end

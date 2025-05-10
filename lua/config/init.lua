@@ -41,6 +41,7 @@ vim.diagnostic.config({
   float = true
   })
 
+vim.g.python3_host_prog = '/home/cinnamon17/.local/nvim-python/bin/python'
 -- Navigate diagnostics
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = "Go to next diagnostic" })
