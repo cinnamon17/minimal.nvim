@@ -189,6 +189,12 @@ return {
 		completion = {
 		    completeopt = 'menu,menuone,noinsert,noselect'
 		},
+		mapping = {
+		    ['<C-n>'] = cmp.mapping.select_next_item(),
+		    ['<C-p>'] = cmp.mapping.select_prev_item(),
+		    ['<C-y>'] = cmp.mapping.confirm { select = true },
+		    ['<C-Space>'] = cmp.mapping.complete {},
+		},
 		sources = {
 		    { name = 'nvim_lsp' },  -- Includes PHP Actor completions
 		    { name = 'buffer' },
