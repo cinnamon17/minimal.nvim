@@ -32,6 +32,23 @@ return {
 	    "mfussenegger/nvim-dap"
 	},
 	config = function()
+	    local cmp = require('cmp')
+	    cmp.setup({
+		completion = {
+		    completeopt = 'menu,menuone,noinsert,noselect'
+		},
+		mapping = {
+		    ['<C-n>'] = cmp.mapping.select_next_item(),
+		    ['<C-p>'] = cmp.mapping.select_prev_item(),
+		    ['<C-y>'] = cmp.mapping.confirm { select = true },
+		    ['<C-Space>'] = cmp.mapping.complete {},
+		},
+		sources = {
+		    { name = 'nvim_lsp' },  -- Includes PHP Actor completions
+		    { name = 'buffer' },
+		    { name = 'path' }
+		}
+	    })
 	    -- Your existing keymaps (unchanged)
 	    vim.keymap.set('n', '<A-o>', function()
 		require('jdtls').organize_imports()
@@ -134,6 +151,15 @@ return {
 			})
 		    })
 		end
+	    })
+
+	    -- Proper shutdown on exit
+	    vim.api.nvim_create_autocmd('VimLeave', {
+		callback = function()
+		    if vim.fn.has('unix') == 1 then
+			os.execute("killall -9 java 2>/dev/null")
+		    end
+		end,
 	    })
 	end
     },
