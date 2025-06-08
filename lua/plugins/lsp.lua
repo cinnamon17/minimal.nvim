@@ -32,24 +32,7 @@ return {
 	    "mfussenegger/nvim-dap"
 	},
 	config = function()
-	    local cmp = require('cmp')
-	    cmp.setup({
-		completion = {
-		    completeopt = 'menu,menuone,noinsert,noselect'
-		},
-		mapping = {
-		    ['<C-n>'] = cmp.mapping.select_next_item(),
-		    ['<C-p>'] = cmp.mapping.select_prev_item(),
-		    ['<C-y>'] = cmp.mapping.confirm { select = true },
-		    ['<C-Space>'] = cmp.mapping.complete {},
-		},
-		sources = {
-		    { name = 'nvim_lsp' },  -- Includes PHP Actor completions
-		    { name = 'buffer' },
-		    { name = 'path' }
-		}
-	    })
-	    -- Your existing keymaps (unchanged)
+
 	    vim.keymap.set('n', '<A-o>', function()
 		require('jdtls').organize_imports()
 	    end, { desc = 'Organize Java imports' })
@@ -208,26 +191,6 @@ return {
 		    }
 		}
 	    }
-
-	    -- Add nvim-cmp configuration (preserves your PHP Actor setup)
-	    local cmp = require('cmp')
-	    cmp.setup({
-		completion = {
-		    completeopt = 'menu,menuone,noinsert,noselect'
-		},
-		mapping = {
-		    ['<C-n>'] = cmp.mapping.select_next_item(),
-		    ['<C-p>'] = cmp.mapping.select_prev_item(),
-		    ['<C-y>'] = cmp.mapping.confirm { select = true },
-		    ['<C-Space>'] = cmp.mapping.complete {},
-		},
-		sources = {
-		    { name = 'nvim_lsp' },  -- Includes PHP Actor completions
-		    { name = 'buffer' },
-		    { name = 'path' }
-		}
-	    })
-
 	    -- Optional: PHP-specific keymaps
 	    vim.api.nvim_create_autocmd('FileType', {
 		pattern = 'php',
