@@ -1,25 +1,4 @@
 return {
-    -- Lua
-    {
-	"neovim/nvim-lspconfig",
-	dependencies = {
-	    {
-		"folke/lazydev.nvim",
-		ft = "lua", -- only load on lua files
-		opts = {
-		    library = {
-			-- See the configuration section for more details
-			-- Load luvit types when the `vim.uv` word is found
-			{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
-		    },
-		},
-	    }
-	},
-	config = function()
-	    require("lspconfig").lua_ls.setup {}
-	end,
-    },
-
     -- Java
     {
 	"mfussenegger/nvim-jdtls",
@@ -62,9 +41,10 @@ return {
 	    local project_name = vim.fn.fnamemodify(root_dir, ":p:h:t")
 	    local workspace_dir = vim.fn.stdpath('data') .. '/workspace/' .. project_name
 	    local is_libgdx = vim.fn.findfile('core/build.gradle', root_dir..';') ~= ''
-	    local jdtls_bin = '/usr/local/src/jdt-language-server-latest/bin/jdtls'
+	    -- wen auto installed edit the jdtls.py and replace JAVA_HOME to match JAVA_JDK_21 and set the environment variable
+	    local jdtls_bin = vim.env.MASON .. '/bin/jdtls'
 	    if jit.os == "Windows" then
-		-- download from eclipse snapshots, and edit the python script to match JAVA_JDK_21
+		-- match JAVA_JDK_21
 		-- get from https://download.eclipse.org/jdtls/snapshots/?d
 		jdtls_bin = vim.fn.expand('~/AppData/Local/jdt-language-server-latest/bin/jdtls');
 	    end
@@ -200,5 +180,5 @@ return {
 		end
 	    })
 	end
-    }
+    },
 }
